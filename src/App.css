@@ -1,0 +1,32 @@
+@import '~antd/dist/antd.css';
+
+.ant-layout {
+    height: 100vh;
+    background-color: white;
+}
+
+.ant-layout-header {
+    color: #f0f2f5;
+}
+
+.ant-layout-content {
+    overflow: auto;
+}
+
+.ant-layout-footer {
+    display: flex;
+    background-color: #001529;
+}
+
+.ant-list-item {
+    border-bottom: 1px dashed silver;
+}
+
+.todo-item {
+    display: flex;
+    flex-grow: 1;
+}
+
+.todo-title {
+    flex-grow: 1;
+}
