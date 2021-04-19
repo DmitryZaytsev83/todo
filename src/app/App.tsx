@@ -31,7 +31,7 @@ export function App(props: AppProps) {
             new Promise(resolve => {
                 return setTimeout(() => {
                     setLoading(false);
-                    props.onLoad(initialState);
+                    resolve(props.onLoad(initialState));
                 }, 1500);
             })
         }
