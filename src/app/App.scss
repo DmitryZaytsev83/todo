@@ -1,0 +1,12 @@
+@import '../../node_modules/antd/dist/antd.css';
+
+.ant {
+  &-layout {
+    height: 100vh;
+    background-color: white;
+  }
+
+  &-layout-header {
+    color: #f0f2f5;
+  }
+}

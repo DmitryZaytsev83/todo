@@ -1,78 +1,54 @@
-import React, {useState} from 'react';
-import {Input, Layout, List, Button, Checkbox} from 'antd';
-import './App.css';
-import {connect} from 'react-redux'
+import React, {useEffect, useState} from 'react';
+import {Layout} from 'antd';
+import './App.scss';
+import {Todo, Action, initialState, AppState} from '../store/state';
+import {connect} from 'react-redux';
+import {mapDispatchToProps, mapStateToProps} from '../store/connect';
+import TodoList from './components/TodoList/TodoList';
+import AddNewTodo from './components/AddNewTodo/AddNewTodo';
 
-const {Header, Footer, Content} = Layout;
+const {Header} = Layout;
 
-export interface TodoItem {
-    id: number;
-    title: string;
-    completed: boolean
+interface AppProps {
+    data: Todo[];
+    onLoad: (payload: AppState) => (arg: Action) => {};
+    onAdd: (payload: string) => (arg: Action) => {};
+    onDel: (payload: number) => (arg: Action) => {};
+    onChange: (payload: number) => (arg: Action) => {};
 }
 
-interface Props {
-    data: TodoItem[];
-    onAdd: (text: string) => (type: string, text: string) => {};
-    onDel: (text: string) => (type: string, text: string) => {};
-    onChange: (text: string) => (type: string, text: string) => {};
-}
-
-export function App(props: Props) {
+export function App(props: AppProps) {
+    const [loading, setLoading] = useState(true);
     const [inputTodo, setInput] = useState('');
     const addTodo = () => {
-        props.onAdd(inputTodo);
-        setInput('');
+        if (inputTodo) {
+            props.onAdd(inputTodo);
+            setInput('');
+        }
     }
+    useEffect(() => {
+        if (loading) {
+            new Promise(resolve => {
+                return setTimeout(() => {
+                    setLoading(false);
+                    props.onLoad(initialState);
+                }, 1500);
+            })
+        }
+    });
     return (
         <Layout>
             <Header>Todo-list</Header>
-            <Content>
-                <List
-                    size="large"
-                    dataSource={props.data}
-                    renderItem={item => (
-                        <List.Item>
-                            <div className="todo-item">
-                                <Checkbox checked={item.completed}
-                                          style={{textDecoration: item.completed ? 'line-through' : ''}}
-                                          onChange={() => props.onChange(item.id.toString())}>Completed</Checkbox>
-                                <div className="todo-title">{item.title}</div>
-                                <Button type="primary" danger
-                                        onClick={() => props.onDel(item.id.toString())}>
-                                    X
-                                </Button>
-                            </div>
-                        </List.Item>)
-                    }
-                />
-            </Content>
-            <Footer>
-                <Input placeholder="Add Todo" value={inputTodo}
-                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                           setInput(() => (e.target as HTMLInputElement).value);
-                       }}
-                       onKeyDown={(e: React.KeyboardEvent) => {
-                           if (e.key === 'Enter') addTodo();
-                       }}
-                />
-                <Button type="primary" onClick={addTodo}>Add
-                    Todo</Button>
-            </Footer>
+            <TodoList data={props.data}
+                      onChange={props.onChange}
+                      onDel={props.onDel}
+                      loading={loading}
+            />
+            <AddNewTodo inputTodo={inputTodo}
+                        setInput={setInput}
+                        addTodo={addTodo}/>
         </Layout>
     );
-}
-
-function mapStateToProps(state: TodoItem[]) {
-    return {data: state};
-}
-
-function mapDispatchToProps(dispatch: (arg0: { type: string; text: string }) => any) {
-    return {
-        onAdd: (text: string) => dispatch({type: 'ADD', text}),
-        onDel: (text: string) => dispatch({type: 'DEL', text}),
-        onChange: (text: string) => dispatch({type: 'CNG', text}),
-    }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)

@@ -1,0 +1,20 @@
+.ant {
+  &-layout-content {
+    overflow: auto;
+  }
+
+  &-list-item {
+    border-bottom: 1px dashed silver;
+  }
+}
+
+.todo {
+  &-item {
+    display: flex;
+    flex-grow: 1;
+  }
+
+  &-title {
+    flex-grow: 1;
+  }
+}
